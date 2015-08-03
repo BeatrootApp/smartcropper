@@ -32,6 +32,12 @@ class SmartCropper
     sq = square(width, height)
     return @image.crop!(sq[:left], sq[:top], width, height, true)
   end
+  
+  # Crops an image and preserves aspect ratio
+  def zoom_crop(width, height)
+    smart_square
+    return @image.resize_to_fill(width, height)
+  end
 
   # Squares an image (with smart_square) and then scales that to width, heigh
   def smart_crop_and_scale(width, height)
