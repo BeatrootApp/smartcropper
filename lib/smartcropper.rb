@@ -32,11 +32,30 @@ class SmartCropper
     sq = square(width, height)
     return @image.crop!(sq[:left], sq[:top], width, height, true)
   end
-  
+
+  # Returns a Gravity constant based on the area of interest
+  def smart_gravity(width, height)
+    area_of_interest = smart_crop_by_trim(width, height)
+    area = {
+      top: false,
+      left: false,
+      right: false,
+      bottom: false
+    }
+
+    # Flag areas of interest
+    area[:left] = area_of_interest[:left] < (0.25 * image.columns)
+    area[:top] = area_of_interest[:top] < (0.25 * image.rows)
+    area[:right] = area_of_interest[:right] > (0.75 * image.columns)
+    area[:bottom] = area_of_interest[:bottom] > (0.75 * image.rows)
+
+    return gravity(area)
+  end
+
   # Crops an image and preserves aspect ratio
   def zoom_crop(width, height)
     smart_square
-    return @image.resize_to_fill(width, height)
+    return @image.resize_to_fill(width, height, smart_gravity(width, height))
   end
 
   # Squares an image (with smart_square) and then scales that to width, heigh
@@ -67,6 +86,27 @@ class SmartCropper
   # Returns a hash {:left => left, :top => top, :right => right, :bottom => bottom}
   def square(width, height)
     return smart_crop_by_trim(width, height)
+  end
+
+  # Returns a GravityType constant
+  def gravity (options)
+    # Return a gravity constant
+    return CenterGravity if options[:right] && options[:left] && options[:bottom] && options[:top]
+
+    # Bi-directional
+    return NorthWestGravity if options[:left] && options[:top]
+    return NorthEastGravity if options[:right] && options[:top]
+    return SouthWestGravity if options[:left] && options[:bottom]
+    return SouthEastGravity if options[:right] && options[:bottom]
+
+    # Single-direction
+    return NorthGravity if options[:top]
+    return SouthGravity if options[:bottom]
+    return WestGravity if options[:left]
+    return EastGravity if options[:right]
+
+    # Otherwise return just the center
+    return CenterGravity
   end
 
   private

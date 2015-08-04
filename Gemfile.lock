@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    smartcropper (0.7.1)
+    smartcropper (0.7.2)
       rmagick (> 2.11.0)
 
 GEM
@@ -19,7 +19,7 @@ GEM
     minitest (4.7.5)
     multi_json (1.7.7)
     rake (0.8.7)
-    rmagick (2.13.2)
+    rmagick (2.15.3)
     rspec (2.14.0)
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
@@ -46,3 +46,6 @@ DEPENDENCIES
   rspec
   shoulda
   smartcropper!
+
+BUNDLED WITH
+   1.10.6
